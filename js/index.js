@@ -11,14 +11,64 @@ const fadeElement = document.querySelector('#fade');
 
 const tel = document.getElementById('phone') // Seletor do campo de telefone
 
-tel.addEventListener('keypress', (e) => mascaraTelefone(e.target.value)) // Dispara quando digitado no campo
+tel.addEventListener('keypress', (e) => {
+    
+    const onlyNumbers = /[0-9]/;
+    // allow only numbers
+    if(!onlyNumbers.test(e.key)){
+        e.preventDefault();
+        return;
+    }
+    
+    mascaraTelefone(e.target.value)
+
+}) // Dispara quando digitado no campo
+
 tel.addEventListener('change', (e) => mascaraTelefone(e.target.value)) // Dispara quando autocompletado o campo
+
+cepInput.addEventListener('keypress', (e) => {
+    
+    const onlyNumbers = /[0-9]/;
+    // allow only numbers
+    if(!onlyNumbers.test(e.key)){
+        e.preventDefault();
+        return;
+    }
+    mCEP(e.target.value)
+
+})
+
+cepInput.addEventListener('change', (e) => mCEP(e.target.value))
+
+cepInput.addEventListener('keyup',(e) =>{
+    const inputValue = e.target.value
+    
+    // check if we have the correct length
+    if(inputValue.length === 10){
+        const arrayCep = inputValue.split('')
+ 
+        let valor = '';
+
+        arrayCep.map((item)=>{
+            if(item !== '.') valor += item
+        })
+                
+        getAddress(valor);
+    }
+});
 
 const mascaraTelefone = (valor) => {
     valor = valor.replace(/\D/g, "")
     valor = valor.replace(/^(\d{2})(\d)/g, "($1) $2")
     valor = valor.replace(/(\d)(\d{4})$/, "$1-$2")
     tel.value = valor // Insere o(s) valor(es) no campo
+}
+
+const mCEP = (cep) => {
+    cep = cep.replace(/\D/g,"")
+    cep = cep.replace(/^(\d{2})(\d)/,"$1.$2")
+    cep = cep.replace(/\.(\d{3})(\d)/,".$1-$2")
+    cepInput.value = cep
 }
 
 // Get customer address from API;
@@ -103,23 +153,23 @@ addressForm.addEventListener('submit', (e) =>{
 })
 
 // validade cep input
-cepInput.addEventListener('keypress',(e) => {
-    const onlyNumbers = /[0-9]/;
-    // allow only numbers
-    if(!onlyNumbers.test(e.key)){
-        e.preventDefault();
-        return;
-    }
+// cepInput.addEventListener('keypress',(e) => {
+    // const onlyNumbers = /[0-9]/;
+    // // allow only numbers
+    // if(!onlyNumbers.test(e.key)){
+    //     e.preventDefault();
+    //     return;
+//     }
     
-});
+// });
 
-// Get address event
-cepInput.addEventListener('keyup',(e) =>{
-    const inputValue = e.target.value
+// // Get address event
+// cepInput.addEventListener('keyup',(e) =>{
+//     const inputValue = e.target.value
 
-    // check if we have the correct length
-    if(inputValue.length === 8){
-        getAddress(inputValue);
-    }
-});
+//     // check if we have the correct length
+//     if(inputValue.length === 8){
+//         getAddress(inputValue);
+//     }
+// });
 
